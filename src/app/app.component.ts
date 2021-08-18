@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import * as  d3 from 'd3';
-import * as d3Sankey from 'd3-sankey';
+import {sankey , sankeyLeft, sankeyLinkHorizontal} from 'd3-sankey';
 
 const DROPOUT_NODE_NAME = "SAMPLE_DROPOUT";
 @Component({
@@ -44,13 +44,13 @@ export class AppComponent implements OnInit {
 
   drawChart(chartData: any): void {
     // plotting the sankey chart
-       const sankey = d3Sankey.sankey()
+       const sankey1 = sankey()
          .nodeWidth(15)
          .nodePadding(10)
-         .nodeAlign(d3Sankey.sankeyLeft)
-         .extent([[1, 1], [100, 100]]);
-       sankey(chartData);
-   
+          .nodeAlign(sankeyLeft)
+          .extent([[1, 1], [100, 100]]);
+          // sankey();
+       const sankeyLinkHorizontal1 = sankeyLinkHorizontal();
        const iter = d3.nest()
          .key((d: any) => d.x0)
          .sortKeys(d3.ascending)
@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
       .enter()
       .filter((l: any) => l.target.name.toLowerCase() !== DROPOUT_NODE_NAME)
       .append('path')
-      .attr('d', d3Sankey.sankeyLinkHorizontal())
+      .attr('d', sankeyLinkHorizontal())
       .attr('fill', 'none')
       .attr('stroke', '#9e9e9e')
       .style('opacity', '0.7')
@@ -115,7 +115,7 @@ export class AppComponent implements OnInit {
         }
       })
       .attr('height', (d: any) => Math.abs(d.target.y0 - d.target.y1))
-      .attr('width', (d: any) => sankey.nodeWidth() + 3)
+      .attr('width', (d: any) => sankey1.nodeWidth() + 3)
       .attr('fill', '#f44336')
       .attr('stroke', '#f44336')
       .attr('class', 'dropout-node')
